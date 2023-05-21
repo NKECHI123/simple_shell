@@ -49,7 +49,7 @@ void shell_loop(data_shell *datash)
 	loop = 1;
 	while (loop == 1)
 	{
-		write(STDIN_FILENO, "^-^ ", 4);
+		write(STDIN_FILENO, "$$ ", 3);
 		input = read_line(&i_eof);
 		if (i_eof != -1)
 		{
@@ -57,7 +57,7 @@ void shell_loop(data_shell *datash)
 			if (input == NULL)
 				continue;
 
-			if (check_syntax_error(datash, input) == 1)
+			if (check_syn_err(datash, input) == 1)
 			{
 				datash->status = 2;
 				free(input);

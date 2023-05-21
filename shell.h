@@ -12,8 +12,11 @@
 #include <string.h>
 
 /* for read/write buffers */
+#define BUFSIZE 1024
 #define READ_BUF_SIZE 1024
 #define WRITE_BUF_SIZE 1024
+#define TOK_BUFSIZE 128
+#define TOK_DELIM " \t\r\n\a"
 #define BUF_FLUSH -1
 
 /* for command chaining */
@@ -37,20 +40,18 @@ extern char **environ;
 
 
 /**
- * struct data - a new struct type showing all relevant data
- * @dir: A directory field.
- * @str: a string
- * @next: points to the next struct list_s.
- * @av: argument vector
- * @status: last status of shell
- * @_environ: environment variable
- * @arg: arguement of the command line
- * @input: command line used by user
+ * struct data - struct that contains all relevant data on runtime
+ * @prog_name: argument vector
+ * @input: command line written by the user
+ * @args: tokens of the command line
+ * @status: last status of the shell
  * @counter: lines counter
+ * @_environ: environment variable
+ * @pid: process ID of the shell
  */
 typedef struct data
 {
-	char **av;
+	char **prog_name;
 	char *input;
 	char **args;
 	int status;
@@ -89,7 +90,6 @@ typedef struct line_list_s
  * @val: value of the variable
  * @len_val: length of the value
  * @go_next: next node
- * @add_nodes: add nodes to the variable
  * Description: single linked list to store variables
  */
 typedef struct r_var_list
@@ -97,7 +97,7 @@ typedef struct r_var_list
 	int len_var;
 	char *val;
 	int len_val;
-	struct r_var_list *next;
+	struct r_var_list *go_next;
 } r_var;
 
 /**
@@ -129,7 +129,7 @@ char *_strchr(char *s, char c);
 int _strspn(char *s, char *accept);
 
 /* aux_mem.c */
-void _memcpy(void *newptr, const void *ptr, unsigned int size);
+void _memcopy(void *dest, const void *src, unsigned int size);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 char **_reallocdp(char **ptr, unsigned int old_size, unsigned int new_size);
 
@@ -141,14 +141,14 @@ char *_strtok(char str[], const char *delim);
 int _isdigit(const char *s);
 
 /* aux_str3.c */
-void rev_string(char *s);
+void rev_str(char *str);
 
-/* check_syntax_error.c */
+/* check_syn_err.c */
 int repeated_char(char *input, int i);
 int error_sep_op(char *input, int i, char last);
 int first_char(char *input, int *i);
-void print_syntax_error(data_shell *datash, char *input, int i, int bool);
-int check_syntax_error(data_shell *datash, char *input);
+void print_syn_err(data_shell *shell_data, char *input, int i, int bool);
+int check_syn_err(data_shell *shell_data, char *input);
 
 /* shell_loop.c */
 char *without_comment(char *in);
@@ -182,7 +182,7 @@ int is_cdir(char *path, int *i);
 char *_which(char *cmd, char **_environ);
 int is_executable(data_shell *datash);
 int check_error_cmd(char *dir, data_shell *datash);
-int cmd_exec(data_shell *datash);
+int execute_command(data_shell *shell_data);
 
 /* env1.c */
 char *_getenv(const char *name, char **_environ);
@@ -195,13 +195,13 @@ int _setenv(data_shell *datash);
 int _unsetenv(data_shell *datash);
 
 /* cd.c */
-void cd_dot(data_shell *datash);
-void cd_to(data_shell *datash);
-void cd_previous(data_shell *datash);
-void cd_to_home(data_shell *datash);
+void cd_dot(data_shell *shell_data);
+void cd_to(data_shell *shell_data);
+void cd_previous(data_shell *shell_data);
+void cd_to_home(data_shell *shell_data);
 
 /* cd_shell.c */
-int cd_shell(data_shell *datash);
+int cd_shell(data_shell *shell_data);
 
 /* get_builtin */
 int (*get_builtin(char *cmd))(data_shell *datash);
@@ -210,23 +210,22 @@ int (*get_builtin(char *cmd))(data_shell *datash);
 int exit_shell(data_shell *datash);
 
 /* aux_stdlib.c */
-int get_len(int n);
-char *aux_itoa(int n);
-int _atoi(char *s);
+int get_len(int num);
+char *int_to_string(int n);
+int _atoi(char *str);
 
 /* aux_error1.c */
 char *strcat_cd(data_shell *, char *, char *, char *);
-char *error_get_cd(data_shell *datash);
-char *error_not_found(data_shell *datash);
-char *error_exit_shell(data_shell *datash);
+char *err_get_cd(data_shell *datash);
+char *err_not_found(data_shell *datash);
+char *err_exit_shell(data_shell *datash);
 
 /* aux_error2.c */
 char *error_get_alias(char **args);
-char *error_env(data_shell *datash);
+char *env_err(data_shell *s_data);
 char *error_syntax(char **args);
 char *error_permission(char **args);
-char *error_path_126(data_shell *datash);
-
+char *error_path_126(data_shell *s_data);
 
 /* get_error.c */
 int get_error(data_shell *datash, int eval);

@@ -123,7 +123,7 @@ char *replaced_input(r_var **head, char *input, char *new_input, int nlen)
 				j += (indx->len_var);
 				i--;
 			}
-			indx = indx->next;
+			indx = indx->go_next;
 		}
 		else
 		{
@@ -148,7 +148,7 @@ char *rep_var(char *input, data_shell *datash)
 	char *status, *new_input;
 	int olen, nlen;
 
-	status = aux_itoa(datash->status);
+	status = int_to_string(datash->status);
 	head = NULL;
 
 	olen = check_vars(&head, input, status, datash);
@@ -165,7 +165,7 @@ char *rep_var(char *input, data_shell *datash)
 	while (indx != NULL)
 	{
 		nlen += (indx->len_val - indx->len_var);
-		indx = indx->next;
+		indx = indx->go_next;
 	}
 
 	nlen += olen;

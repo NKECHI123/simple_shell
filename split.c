@@ -51,7 +51,7 @@ char *swap_char(char *input, int bool)
  * @input: input string
  * Return: no return
  */
-void add_nodes(sep_list **head_s, line_list **head_l, char *input)
+void add_nodes(sep_list **head_s, line_list **head_1, char *input)
 {
 	int i;
 	char *line;
@@ -73,7 +73,7 @@ void add_nodes(sep_list **head_s, line_list **head_l, char *input)
 	line = _strtok(input, ";|&");
 	do {
 		line = swap_char(line, 1);
-		add_line_node_end(head_l, line);
+		add_line_node_end(head_1, line);
 		line = _strtok(NULL, ";|&");
 	} while (line != NULL);
 
@@ -87,7 +87,7 @@ void add_nodes(sep_list **head_s, line_list **head_l, char *input)
  * @datash: data structure
  * Return: no return
  */
-void go_next(sep_list **list_s, line_list  **list_l, data_shell *datash)
+void go_next(sep_list **list_s, line_list  **list_1, data_shell *datash)
 {
 	int loop_sep;
 	sep_list *ls_s;
@@ -95,7 +95,7 @@ void go_next(sep_list **list_s, line_list  **list_l, data_shell *datash)
 
 	loop_sep = 1;
 	ls_s = *list_s;
-	ls_l = *list_l;
+	ls_l = *list_1;
 
 	while (ls_s != NULL && loop_sep)
 	{
@@ -118,7 +118,7 @@ void go_next(sep_list **list_s, line_list  **list_l, data_shell *datash)
 	}
 
 	*list_s = ls_s;
-	*list_l = ls_l;
+	*list_1 = ls_l;
 }
 
 /**

@@ -30,7 +30,7 @@ void set_data(data_shell *datash, char **av)
 {
 	unsigned int i;
 
-	datash->av = av;
+	datash->prog_name = av;
 	datash->input = NULL;
 	datash->args = NULL;
 	datash->status = 0;
@@ -47,7 +47,7 @@ void set_data(data_shell *datash, char **av)
 	}
 
 	datash->_environ[i] = NULL;
-	datash->pid = aux_itoa(getpid());
+	datash->pid = int_to_string(getpid());
 }
 
 /**
